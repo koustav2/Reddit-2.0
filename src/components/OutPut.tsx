@@ -28,7 +28,7 @@ const style = {
 
 const OutPut: FC<EditorOutputProps> = ({ content }) => {
   return (
-    // @ts-expect-error
+    
     <Output
       style={style}
       className='text-sm'
