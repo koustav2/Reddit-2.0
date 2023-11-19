@@ -8,7 +8,7 @@ import PostComment from './comments/PostComment'
 
 interface CommentsSectionProps {
   postId: string
-  comments: ExtendedComment[]
+  comments?: ExtendedComment[]
 
 }
 type ExtendedComment = Comment & {
