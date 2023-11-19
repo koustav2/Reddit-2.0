@@ -22,9 +22,6 @@ import { Users } from 'lucide-react'
 interface SearchBarProps {
 
 }
-interface CommandInputProps extends InputHTMLAttributes<HTMLInputElement> {
-    isLoading: boolean;
-  }
   
   
 
@@ -49,7 +46,6 @@ const SearchBar: FC<SearchBarProps> = ({ }) => {
     }, [])
 
     const {
-        isFetching,
         data: queryResults,
         refetch,
         isFetched,

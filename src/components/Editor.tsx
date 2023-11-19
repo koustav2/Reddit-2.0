@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 'use client'
 
@@ -11,12 +10,11 @@ import TextareaAutosize from 'react-textarea-autosize'
 import { z } from 'zod'
 import { FC } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
-// import { uploadFiles } from '@/lib/upload'
+import { uploadFiles } from '@/lib/upload'
 import { PostCreationRequest, PostValidator } from '@/lib/validators/post'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import '@/styles/editor.css'
-import { uploadFiles } from '@/lib/upload'
 
 interface EditorProps {
   subredditId: string
@@ -61,7 +59,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
     }
   })
 
-  
+
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default
     const Header = (await import('@editorjs/header')).default
@@ -95,15 +93,20 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
             config: {
               uploader: {
                 async uploadByFile(file: File) {
+
                   // upload to uploadthing
-                  const [res] = await uploadFiles([file], 'imageUploader')
-                  console.log(res)
+                  const [res] = await uploadFiles(
+                    [file],
+                    'imageUploader',
+                    // subredditId
+                  )
+                  
                   return {
                     success: 1,
                     file: {
-                      url: res.fileUrl,
+                      url: res.url,
                     },
-                  }
+                  };
                 },
               },
             },
