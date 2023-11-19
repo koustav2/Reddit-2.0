@@ -23,7 +23,7 @@ export const fetchCache = 'force-no-store'
 
 const SubRedditPostPage = async ({ params }: SubRedditPostPageProps) => {
     const cachedPost = (await redis.hgetall(`post:${params.postId}`)) as CachedPost
-
+    console.log(params.postId)
     let post: (Post & { votes: Vote[]; author: User }) | null = null
 
     if (!cachedPost) {
@@ -55,7 +55,6 @@ const SubRedditPostPage = async ({ params }: SubRedditPostPageProps) => {
         <div>
             <div className='h-full flex flex-col sm:flex-row items-center sm:items-start justify-between'>
                 <Suspense fallback={<PostVoteShell />}>
-                    {/* @ts-expect-error server component */}
                     <PostVoteServer
                         postId={post?.id ?? cachedPost.id}
                         getData={getData}

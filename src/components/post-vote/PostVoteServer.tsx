@@ -28,14 +28,14 @@ const PostVoteServer = async ({ postId, initialVotesAmt, initialVote, getData, }
     const post = await getData()
     if (!post) return notFound()
 
-    _votesCount = post.votes.reduce((acc, vote) => {
+    _votesCount = post.votes.reduce((acc: number, vote: { type: string }) => {
       if (vote.type === 'UP') return acc + 1
       if (vote.type === 'DOWN') return acc - 1
       return acc
     }, 0)
 
     _currentVote = post.votes.find(
-      (vote) => vote.userId === session?.user?.id
+      (vote: { userId: string | undefined }) => vote.userId === session?.user?.id
     )?.type
   } else {
     // passed as props

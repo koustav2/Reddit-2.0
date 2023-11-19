@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 'use client'
 
@@ -96,7 +97,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
                 async uploadByFile(file: File) {
                   // upload to uploadthing
                   const [res] = await uploadFiles([file], 'imageUploader')
-
+                  console.log(res)
                   return {
                     success: 1,
                     file: {
