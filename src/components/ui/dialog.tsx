@@ -9,13 +9,15 @@ import { cn } from "@/lib/utils"
 const Dialog = DialogPrimitive.Root
 
 const DialogTrigger = DialogPrimitive.Trigger
-
+interface ExtendedDialogPortalProps extends DialogPrimitive.DialogPortalProps {
+  className?: string;
+}
 const DialogPortal = ({
-  className,
+  // className,
   children,
-  ...props
-}: DialogPrimitive.DialogPortalProps) => (
-  <DialogPrimitive.Portal className={cn(className)} {...props}>
+  // ...props
+}: ExtendedDialogPortalProps) => (
+  <DialogPrimitive.Portal >
     <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center">
       {children}
     </div>
