@@ -108,10 +108,10 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
                   const [res] = await uploadFiles('imageUploader', {
                     files: [file],
                     onUploadProgress: ({ file: uploadedFile, progress }: { file: string; progress: number }) => {
-                      console.log(`Upload progress for ${uploadedFile}: ${progress}%`);
+                      // console.log(`Upload progress for ${uploadedFile}: ${progress}%`);
                     },
                     onUploadBegin: ({ file: uploadedFile }: { file: string }) => {
-                      console.log(`Upload started for ${uploadedFile}`);
+                      // console.log(`Upload started for ${uploadedFile}`);
                     },
                   });
 
