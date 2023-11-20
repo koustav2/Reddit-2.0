@@ -30,7 +30,7 @@ const UserAuthForm: FC<UserAuthFormProps> = ({ className, ...props }) => {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-                theme: "dark",
+                theme: "light",
                 });
         } catch (error) {
 
@@ -42,7 +42,7 @@ const UserAuthForm: FC<UserAuthFormProps> = ({ className, ...props }) => {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-                theme: "colored",
+                theme: "light",
             });
     } finally {
         setIsLoading(false)

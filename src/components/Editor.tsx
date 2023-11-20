@@ -8,29 +8,33 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
 import { z } from 'zod'
-import { FC } from 'react'
-import toast, { Toaster } from 'react-hot-toast';
-import { uploadFiles } from '@/lib/upload'
+import { toast } from '@/hooks/use-toast'
 import { PostCreationRequest, PostValidator } from '@/lib/validators/post'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
+
 import '@/styles/editor.css'
+import { uploadFiles } from '@/lib/upload'
+
+type FormData = z.infer<typeof PostValidator>
 
 interface EditorProps {
   subredditId: string
 }
 
-const Editor: FC<EditorProps> = ({ subredditId }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<PostCreationRequest>({
+export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(PostValidator),
     defaultValues: {
+      subredditId,
       title: '',
       content: null,
-      subredditId
-    }
+    },
   })
-
-
   const ref = useRef<EditorJS>()
   const _titleRef = useRef<HTMLTextAreaElement>(null)
   const router = useRouter()
@@ -38,27 +42,34 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
   const pathname = usePathname()
 
   const { mutate: createPost } = useMutation({
-
-    mutationFn: async ({ title, content, subredditId, }: PostCreationRequest) => {
-
+    mutationFn: async ({
+      title,
+      content,
+      subredditId,
+    }: PostCreationRequest) => {
       const payload: PostCreationRequest = { title, content, subredditId }
       const { data } = await axios.post('/api/subreddit/post/create', payload)
       return data
     },
-
     onError: () => {
-      return toast.error('Something went wrong Your post was not published. Please try again.',)
+      return toast({
+        title: 'Something went wrong.',
+        description: 'Your post was not published. Please try again.',
+        variant: 'destructive',
+      })
     },
     onSuccess: () => {
-
       // turn pathname /r/mycommunity/submit into /r/mycommunity
       const newPathname = pathname.split('/').slice(0, -1).join('/')
       router.push(newPathname)
-      router.refresh()
-      return toast.success('Your post has been published.')
-    }
-  })
 
+      router.refresh()
+
+      return toast({
+        description: 'Your post has been published.',
+      })
+    },
+  })
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default
@@ -93,20 +104,24 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
             config: {
               uploader: {
                 async uploadByFile(file: File) {
-
                   // upload to uploadthing
-                  const [res] = await uploadFiles(
-                    [file],
-                    'imageUploader',
-                    // subredditId
-                  )
-                  
+                  const [res] = await uploadFiles('imageUploader', {
+                    files: [file],
+                    onUploadProgress: ({ file: uploadedFile, progress }: { file: string; progress: number }) => {
+                      console.log(`Upload progress for ${uploadedFile}: ${progress}%`);
+                    },
+                    onUploadBegin: ({ file: uploadedFile }: { file: string }) => {
+                      console.log(`Upload started for ${uploadedFile}`);
+                    },
+                  });
+
+
                   return {
                     success: 1,
                     file: {
                       url: res.url,
                     },
-                  };
+                  }
                 },
               },
             },
@@ -125,7 +140,11 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
     if (Object.keys(errors).length) {
       for (const [_key, value] of Object.entries(errors)) {
         value
-        toast.error(`Something went wrong. ${(value as { message: string }).message}`)
+        toast({
+          title: 'Something went wrong.',
+          description: (value as { message: string }).message,
+          variant: 'destructive',
+        })
       }
     }
   }, [errors])
@@ -155,7 +174,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
     }
   }, [isMounted, initializeEditor])
 
-  async function onSubmit(data: PostCreationRequest) {
+  async function onSubmit(data: FormData) {
     const blocks = await ref.current?.save()
 
     const payload: PostCreationRequest = {
@@ -166,25 +185,23 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
 
     createPost(payload)
   }
-  // createPost(payload)
+
   if (!isMounted) {
     return null
   }
 
   const { ref: titleRef, ...rest } = register('title')
 
-
   return (
     <div className='w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200'>
-      <form id='subreddit-post-form'
+      <form
+        id='subreddit-post-form'
         className='w-fit'
-        onSubmit={handleSubmit(onSubmit)}
-      >
+        onSubmit={handleSubmit(onSubmit)}>
         <div className='prose prose-stone dark:prose-invert'>
           <TextareaAutosize
             ref={(e) => {
               titleRef(e)
-
               // @ts-ignore
               _titleRef.current = e
             }}
@@ -202,12 +219,6 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
           </p>
         </div>
       </form>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-      />
     </div>
   )
 }
-
-export default Editor

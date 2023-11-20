@@ -1,5 +1,6 @@
 import CommentsSection from '@/components/CommentsSection'
 import EditorOutput from '@/components/EditorOutput'
+import Loader from '@/components/Loader'
 import PostVoteServer from '@/components/post-vote/PostVoteServer'
 import { buttonVariants } from '@/components/ui/Button'
 import { db } from '@/lib/db'
@@ -7,7 +8,7 @@ import { redis } from '@/lib/redis'
 import { formatTimeToNow } from '@/lib/utils'
 import { CachedPost } from '@/types/redis'
 import { Post, User, Vote } from '@prisma/client'
-import { ArrowBigDown, ArrowBigUp, Loader2 } from 'lucide-react'
+import { ArrowBigDown, ArrowBigUp } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
@@ -72,9 +73,9 @@ const SubRedditPostPage = async ({ params }: SubRedditPostPageProps) => {
                     <EditorOutput content={post?.content ?? cachedPost.content} />
                     <Suspense
                         fallback={
-                            <Loader2 className='h-5 w-5 animate-spin text-zinc-500' />
+                            <Loader />
                         }>
-                       
+
                         <CommentsSection postId={post?.id ?? cachedPost.id} />
                     </Suspense>
                 </div>
@@ -93,7 +94,7 @@ function PostVoteShell() {
 
             {/* score */}
             <div className='text-center py-2 font-medium text-sm text-zinc-900'>
-                <Loader2 className='h-3 w-3 animate-spin' />
+                <Loader />
             </div>
 
             {/* downvote */}

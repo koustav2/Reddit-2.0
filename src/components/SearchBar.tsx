@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import debounce from 'lodash.debounce'
 import { usePathname, useRouter } from 'next/navigation'
-import { FC, InputHTMLAttributes, useCallback, useEffect, useRef, useState } from 'react'
+import { FC, useCallback, useEffect, useRef, useState } from 'react'
 import {
     Command,
     CommandEmpty,
@@ -38,7 +38,7 @@ const SearchBar: FC<SearchBarProps> = ({ }) => {
 
     const request = debounce(async () => {
         refetch()
-    }, 300)
+    }, 2000)
 
     const debounceRequest = useCallback(() => {
         request()

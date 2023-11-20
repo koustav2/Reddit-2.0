@@ -6,7 +6,7 @@ import axios, { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
 import { startTransition } from 'react'
 // import toast, { Toaster } from 'react-hot-toast';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCustomToasts } from '@/hooks/custom-toast'
 
@@ -132,7 +132,6 @@ const SubscribeToggle = ({
                 isLoading={isUnsubLoading}
                 onClick={() => unsubscribe()}>
                 Leave community
-                <ToastContainer />
             </Button>
         ) : (
             <Button
@@ -140,7 +139,6 @@ const SubscribeToggle = ({
                 isLoading={isSubLoading}
                 onClick={() => subscribe()}>
                 Join to post
-                <ToastContainer />
             </Button>
         )
 
